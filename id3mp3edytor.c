@@ -45,6 +45,7 @@ int odczytajTag(char *p)
         return 0; //zwrócone 0, czyli nie znaleziono TAG w pliku
     }
 
+    printf("Zawartość tagu ID3v1 pliku %s:\n\n", p);
     //----------------------wypisanie tagu ID3v1-------------------
     //wypisanie tytułu
     printf("Tytuł: ");
@@ -68,7 +69,7 @@ int odczytajTag(char *p)
     printf("Rok: ");
     for (int i = 4; i > 0; i--)
         printf("%c", fgetc(plik));
-    printf("\n\n");
+    printf("\n");
 
     //wypisanie komentarza
     printf("Komentarz: ");
@@ -265,6 +266,8 @@ void tagZnazwy(char *p)
     //zapis nowoutworzonego tagu ID3v1 w pliku
     zapiszTagWpliku(p, nowyTag);
 
+    printf("Utworzono tag ID3v1 bazując na nazwie pliku!\n");
+
 }
 
 //funkcja wyświetlająca wszystkie możliwe gatunki ID3v1
@@ -301,18 +304,18 @@ int main(int argc, char const *argv[])
 
 
     //sprawdzenie liczby argumentów wejściowych programu
-    if(argc < 2 || argc >2)
+    if(argc > 3 || argc < 2)
         pomoc();
     //sprawdzanie kolejnych możliwych trybów wybranych przez użytkownika
-    else if(argv[1]=="-o")
+    else if((strcmp(argv[1],"-o"))==0)
         odczytajTag(argv[2]);
-    else if(argv[1]=="-d")
+    else if((strcmp(argv[1],"-d"))==0)
         dodajTagRecznie(argv[2]);
-    else if(argv[1]=="-t")
+    else if((strcmp(argv[1],"-t"))==0)
         tagNaNazwe(argv[2]);
-    else if(argv[1]=="-n")
+    else if((strcmp(argv[1],"-n"))==0)
         tagZnazwy(argv[2]);
-    else if(argv[1]=="-g")
+    else if((strcmp(argv[1],"-g"))==0)
         wyswietlGatunki();
     else
         pomoc();

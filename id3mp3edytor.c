@@ -85,6 +85,7 @@ int odczytajTag(char *p)
     return 1; //udało się znaleźć TAG
 }
 
+
 //funkcja umożliwiająca ręczne wpisanie tagów ID3v1
 void dodajTagRecznie(char *p)
 {
@@ -197,6 +198,7 @@ void tagNaNazwe(char *p)
         strcat(nowaNazwaPliku, ".mp3");
         printf("Nowa nazwa pliku: %s\n", nowaNazwaPliku);
 
+        //zmiena nazwy pliku
         if (rename(p, nowaNazwaPliku) == 0)
             printf("Udało się zmienić nazwę pliku!\n");
         else
@@ -211,16 +213,68 @@ void tagNaNazwe(char *p)
 }
 
 //funkcja ustawiająca tag ID3v1 pliku na podstawie nazwy pliku
-void tagZnazwy()
+void tagZnazwy(char *p)
 {
+    //zakładamy, że nazwa ma format zgodny z ID3v1 czyli:
+    // tytuł-artysta-album-rok
+    // komentarza ani gatunku raczej w nazwie nie znajdziemy, dlatego pozostaną puste
+    
+    struct tagID3 nowyTag;
+
+    // wypełnienie nowej struktury binarnymi zerami
+    for (int i = 0; i < 30; i++)
+    {
+        nowyTag.tytul[i] = '\0';
+        nowyTag.artysta[i] = '\0';
+        nowyTag.album[i] = '\0';
+        nowyTag.komentarz[i] = '\0';
+    }
+    for (int i = 0; i < 4; i++)
+        nowyTag.rok[i] = '\0';
+    nowyTag.gatunek = '\0';
+
+    //podział nazwy na elementy
+    char *podzial;
+    char nazwa[99];
+    strcpy(nazwa, p);
+    podzial = strtok(nazwa, " ,.-");
+
+    //sprawdzamy otrzymane po podziale ciągi i jeśli są ok, zapisujemy do struktury tagID3
+    if (podzial != NULL)
+    {
+        strcpy(nowyTag.tytul, podzial);
+        podzial = strtok(NULL, " ,.-");
+        if (podzial != NULL)
+        {
+            strcpy(nowyTag.artysta, podzial);
+            podzial = strtok(NULL, " ,.-");
+            if (podzial != NULL)
+            {
+                strcpy(nowyTag.album, podzial);
+                podzial = strtok(NULL, " ,.-");
+
+                long domniemanyRok = strtol(podzial, NULL, 10);
+                if (domniemanyRok>999 && domniemanyRok<9999)
+                {
+                    strcpy(nowyTag.rok, podzial);
+                }
+            }
+        }
+    }
+
+    //zapis nowoutworzonego tagu ID3v1 w pliku
+    zapiszTagWpliku(p, nowyTag);
 
 }
 
 int main(int argc, char const *argv[])
 {
-    /* code */
+    //odzczyt tagu:
     odczytajTag(argv[1]);
-    dodajTagRecznie(argv[1]);
+
+    
+    //dodajTagRecznie(argv[1]);
     //tagNaNazwe(argv[1]);
+    tagZnazwy(argv[1]);
     return 0;
 }

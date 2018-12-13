@@ -279,32 +279,43 @@ void wyswietlGatunki()
             printf("%3d. %-20s %3d. %-20s\n\n", i, gatunek[i], i+1, gatunek[i+1]);
     }
 }
-int main(int argc, char const *argv[])
-{
-    //wyświetlenie nazwy programu
-    printf("id3mp3edytor version 0.1 (Igor Sołdrzyński)\n\n");
 
+//funkcja wyswietlająca pomoc
+void pomoc()
+{
     //tekst pomocy
     printf("Składnia: ./id3mp3edytor [TRYB] plik\n\n"
-    "Przykład: ./id3mp3edytor -o plik.mp3\n\n"
+    "Przykład użycia: ./id3mp3edytor -o plik.mp3\n\n"
     "TRYBY:\n"
     "-o           Odczytaj tag ID3v1 pliku.\n"
     "-d           Dodaj/modyfikuj tag ID3v1 pliku ręcznie.\n"
     "-t           Zmień nazwę pliku na podstawie tagu ID3v1.\n"
     "-n           Ustaw tag ID3v1 z nazwy pliku (nazwa pliku powinna być w schemacie \"tytuł-artysta-album-rok\")\n"
     "-h           Wyświetl ten ekran pomocy.\n"
-    "-g           Wyświetl listę gatunków muzycznych.\n\n");
+    "-g           Wyświetl listę gatunków muzycznych.\n\n"); 
+}
+int main(int argc, char const *argv[])
+{
+    //wyświetlenie nazwy programu
+    printf("id3mp3edytor version 0.1 (Igor Sołdrzyński)\n\n");
+
 
     //sprawdzenie liczby argumentów wejściowych programu
-    if(argc < 2)
+    if(argc < 2 || argc >2)
+        pomoc();
+    //sprawdzanie kolejnych możliwych trybów wybranych przez użytkownika
+    else if(argv[1]=="-o")
+        odczytajTag(argv[2]);
+    else if(argv[1]=="-d")
+        dodajTagRecznie(argv[2]);
+    else if(argv[1]=="-t")
+        tagNaNazwe(argv[2]);
+    else if(argv[1]=="-n")
+        tagZnazwy(argv[2]);
+    else if(argv[1]=="-g")
+        wyswietlGatunki();
+    else
+        pomoc();
 
-    //odzczyt tagu
-    odczytajTag(argv[1]);
-
-    //wyswietlGatunki();
-
-    //dodajTagRecznie(argv[1]);
-    //tagNaNazwe(argv[1]);
-    //tagZnazwy(argv[1]);
     return 0;
 }

@@ -113,12 +113,11 @@ void dodajTagRecznie(char *p)
     fgets(nowyTag.album, 30, stdin);
 
     printf("Podaj rok (4 znaki): ");
-    fgets(nowyTag.rok, 4, stdin);
+    fgets(nowyTag.rok, 5, stdin);
 
     //czyszczenie stdin (było oporne na fflush)
     int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
+    while ((c = getchar()) != '\n' && c != EOF);
 
     printf("Podaj komentarz (do 30 znaków): ");
     fgets(nowyTag.komentarz, 30, stdin);
@@ -126,7 +125,12 @@ void dodajTagRecznie(char *p)
     printf("Podaj nr gatunku (1-126): ");
     scanf("%3d", &(nowyTag.gatunek));
 
-    //---------------zapisanie pobranych danych do pliku-------------------//
+    zapiszTagWpliku(p, nowyTag);
+}
+
+//fukcja zapisująca tag ID3v1 w pliku
+void zapiszTagWpliku(char *p, struct tagID3 nowyTag)
+{
     FILE *plik;
     plik = fopen(p, "r+b");
     if (plik == NULL)
@@ -148,12 +152,6 @@ void dodajTagRecznie(char *p)
     fputc(nowyTag.gatunek, plik);
 
     fclose(plik);
-}
-
-//fukcja zapisująca tag ID3v1 w pliku
-void zapiszTagWpliku()
-{
-
 }
 
 //funkcja zmieniająca nazwę pliku na podstawie tagu ID3v1
@@ -221,8 +219,8 @@ void tagZnazwy()
 int main(int argc, char const *argv[])
 {
     /* code */
-    //odczytajTag(argv[1]);
-    //dodajTagRecznie(argv[1]);
+    odczytajTag(argv[1]);
+    dodajTagRecznie(argv[1]);
     //tagNaNazwe(argv[1]);
     return 0;
 }
